@@ -12,7 +12,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
     }
 
     public HuffmanNode(double frequency, HuffmanNode left, HuffmanNode right) {
-        this.character = '\0';  // Nodo interno
+        this.character = '\0';
         this.frequency = frequency;
         this.left = left;
         this.right = right;
