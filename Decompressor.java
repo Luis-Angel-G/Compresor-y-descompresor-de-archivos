@@ -44,7 +44,7 @@ public class Decompressor {
         // 3. Convertir ASCII a binario
         StringBuilder fullBinary = new StringBuilder();
         for (char c : encodedAscii.toString().toCharArray()) {
-            String binStr = String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0');
+            String binStr = String.format("%8s", Integer.toBinaryString(c & 0xFF)).replace(' ', '0');
             fullBinary.append(binStr);
         }
 
@@ -54,6 +54,11 @@ public class Decompressor {
 
         for (int i = 0; i < fullBinary.length(); i++) {
             current = fullBinary.charAt(i) == '0' ? current.left : current.right;
+
+            if (current == null) {
+                // Bit de padding alcanzado, terminar
+                break;
+            }
 
             if (current.isLeaf()) {
                 decodedText.append(current.character);
