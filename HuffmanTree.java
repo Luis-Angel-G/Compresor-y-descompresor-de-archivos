@@ -1,40 +1,40 @@
 import java.util.*;
 
 public class HuffmanTree {
-    private HuffmanNode root;
-    private Map<Character, String> huffmanCodes = new HashMap<>();
+    private HuffmanNode raiz;
+    private Map<Character, String> caracterConCodigo = new HashMap<>();
 
-    public HuffmanTree(Map<Character, Double> frequencies) {
-        PriorityQueue<HuffmanNode> pq = new PriorityQueue<>();
-        for (Map.Entry<Character, Double> entry : frequencies.entrySet()) {
-            pq.offer(new HuffmanNode(entry.getKey(), entry.getValue()));
+    public HuffmanTree(Map<Character, Double> frecuencias) {
+        PriorityQueue<HuffmanNode> colaDePrioridad = new PriorityQueue<>();
+        for (Map.Entry<Character, Double> caracterYFrecuencia : frecuencias.entrySet()) {
+            colaDePrioridad.offer(new HuffmanNode(caracterYFrecuencia.getKey(), caracterYFrecuencia.getValue()));
         }
 
-        while (pq.size() > 1) {
-            HuffmanNode left = pq.poll();
-            HuffmanNode right = pq.poll();
-            HuffmanNode parent = new HuffmanNode(left.frequency + right.frequency, left, right);
-            pq.offer(parent);
+        while (colaDePrioridad.size() > 1) {
+            HuffmanNode izquierda = colaDePrioridad.poll();
+            HuffmanNode derecha = colaDePrioridad.poll();
+            HuffmanNode padre = new HuffmanNode(izquierda.frecuencia + derecha.frecuencia, izquierda, derecha);
+            colaDePrioridad.offer(padre);
         }
 
-        this.root = pq.poll();
-        generateCodes(this.root, "");
+        this.raiz = colaDePrioridad.poll();
+        crearCodigoBinario(this.raiz, "");
     }
 
-    private void generateCodes(HuffmanNode node, String code) {
-        if (node == null) return;
-        if (node.isLeaf()) {
-            huffmanCodes.put(node.character, code);
+    private void crearCodigoBinario(HuffmanNode nodo, String codigo) {
+        if (nodo == null) return;
+        if (nodo.esHoja()) {
+            caracterConCodigo.put(nodo.caracter, codigo);
         }
-        generateCodes(node.left, code + "0");
-        generateCodes(node.right, code + "1");
+        crearCodigoBinario(nodo.izquierda, codigo + "0");
+        crearCodigoBinario(nodo.derecha, codigo + "1");
     }
 
-    public Map<Character, String> getCodes() {
-        return huffmanCodes;
+    public Map<Character, String> obtenerCodigos() {
+        return caracterConCodigo;
     }
 
-    public HuffmanNode getRoot() {
-        return root;
+    public HuffmanNode obtenerRaiz() {
+        return raiz;
     }
 }
