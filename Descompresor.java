@@ -1,14 +1,27 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * Clase que representa un descompresor de archivos utilizando el algoritmo de Huffman.
+ * Permite descomprimir un archivo previamente comprimido en su formato original.
+ */
 public class Descompresor {
 
+    /**
+     * Descomprime un archivo comprimido utilizando el algoritmo de Huffman.
+     *
+     * @param nombreDelArchivo El nombre del archivo comprimido de entrada.
+     * @param nombreDeSalida   El nombre del archivo de salida descomprimido.
+     * @throws IOException Si ocurre un error al leer o escribir los archivos, o si el archivo comprimido es inválido.
+     */
     public void descomprimir(String nombreDelArchivo, String nombreDeSalida) throws IOException {
+        // Mapa para almacenar las frecuencias de los caracteres
         Map<Character, Integer> mapaDeFrecuencias = new HashMap<>();
         int caracteresTotales = 0;
         int longitudDeBits = 0;
         StringBuilder codigoAscii = new StringBuilder();
 
+        // Leer el archivo comprimido
         try (BufferedReader reader = new BufferedReader(new FileReader(nombreDelArchivo))) {
             String line;
             boolean readingData = false;
@@ -48,24 +61,29 @@ public class Descompresor {
             }
         }
 
+        // Validar que los datos leídos sean correctos
         if (caracteresTotales == 0 || longitudDeBits == 0 || mapaDeFrecuencias.isEmpty()) {
             throw new IOException(".huff invalido");
         }
 
+        // Calcular las frecuencias relativas
         Map<Character, Double> tablaDeFrecuencias = new HashMap<>();
         for (Map.Entry<Character, Integer> caracterYConteo : mapaDeFrecuencias.entrySet()) {
             tablaDeFrecuencias.put(caracterYConteo.getKey(), caracterYConteo.getValue() / (double) caracteresTotales);
         }
 
+        // Reconstruir el árbol de Huffman
         HuffmanTree arbol = new HuffmanTree(tablaDeFrecuencias);
         HuffmanNode raiz = arbol.obtenerRaiz();
 
+        // Convertir el contenido ASCII a código binario
         StringBuilder codigoBinario = new StringBuilder();
         for (char c : codigoAscii.toString().toCharArray()) {
             String binStr = String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0');
             codigoBinario.append(binStr);
         }
 
+        // Decodificar el texto utilizando el árbol de Huffman
         StringBuilder textoDecodificado = new StringBuilder();
         HuffmanNode actual = raiz;
 
@@ -78,14 +96,17 @@ public class Descompresor {
             }
         }
 
+        // Validar que el texto decodificado coincida con el número total de caracteres
         if (textoDecodificado.length() != caracteresTotales) {
             throw new IOException("Texto decodificado no coincide: " + textoDecodificado.length() + " vs " + caracteresTotales);
         }
 
+        // Escribir el texto decodificado en el archivo de salida
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreDeSalida))) {
             writer.write(textoDecodificado.toString());
         }
 
+        // Confirmar la descompresión
         System.out.println("Archivo descomprimido guardado como: " + nombreDeSalida);
     }
 }

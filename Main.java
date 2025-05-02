@@ -1,7 +1,18 @@
 import java.util.Scanner;
 import java.io.File;
 
+/**
+ * Clase principal que implementa un sistema de compresión y descompresión de archivos
+ * utilizando el algoritmo de Huffman. Permite al usuario interactuar con el sistema
+ * a través de un menú en la consola.
+ */
 public class Main {
+
+    /**
+     * Método principal que ejecuta el sistema de compresión y descompresión.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados en este programa).
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Compresor compresor = new Compresor();
@@ -23,7 +34,6 @@ public class Main {
                 System.out.println("Error: Por favor, ingrese un número válido.");
                 continue;
             }
-
 
             try {
                 switch (opcion) {
